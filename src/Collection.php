@@ -8,8 +8,12 @@
 
 namespace Yoshi2889\Collections;
 
+use Evenement\EventEmitterTrait;
+
 class Collection extends \ArrayObject
 {
+	use EventEmitterTrait;
+
 	/**
 	 * @var \Closure
 	 */
@@ -68,6 +72,16 @@ class Collection extends \ArrayObject
 			throw new \InvalidArgumentException('Given value does not match expected value type for this collection.');
 
 		parent::offsetSet($offset, $value);
+		$this->emit('changed');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function offsetUnset($index)
+	{
+		parent::offsetUnset($index);
+		$this->emit('changed');
 	}
 
 	/**
@@ -77,6 +91,15 @@ class Collection extends \ArrayObject
 	{
 		while ($this->contains($value))
 			$this->offsetUnset($this->getOffset($value));
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function exchangeArray($input)
+	{
+		parent::exchangeArray($input);
+		$this->emit('changed');
 	}
 
 	/**
