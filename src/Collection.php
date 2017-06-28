@@ -84,12 +84,10 @@ class Collection extends \ArrayObject
 	/**
 	 * @param mixed $value
 	 */
-	public function remove($value)
+	public function removeAll($value)
 	{
-		if (!$this->contains($value))
-			throw new \InvalidArgumentException('The given value does not exist in this collection.');
-
-		$this->offsetUnset($this->getOffset($value));
+		while ($this->contains($value))
+			$this->offsetUnset($this->getOffset($value));
 	}
 
 	/**
