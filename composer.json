@@ -1,7 +1,7 @@
 {
     "name": "yoshi2889/collections",
     "description": "Simple Collection class allowing storage of specific data.",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=7.1.0"
