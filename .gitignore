@@ -1,0 +1,8 @@
+logs/*
+config.neon
+php_errors
+
+/vendor/
+/storage/*
+!/storage/.empty
+/modules/
