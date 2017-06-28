@@ -36,6 +36,36 @@ class Collection extends \ArrayObject
 	}
 
 	/**
+	 * @param \Closure $condition
+	 *
+	 * @return Collection
+	 */
+	public function filter(\Closure $condition): Collection
+	{
+		$collection = new self($this->validator);
+		foreach ($this->values() as $offset => $value)
+			if ($condition($value))
+				$collection->offsetSet($offset, $value);
+
+		return $collection;
+	}
+
+	/**
+	 * @param \Closure $condition
+	 *
+	 * @return Collection
+	 */
+	public function without(\Closure $condition): Collection
+	{
+		$collection = new self($this->validator);
+		foreach ($this->values() as $offset => $value)
+			if (!$condition($value))
+				$collection->offsetSet($offset, $value);
+
+		return $collection;
+	}
+
+	/**
 	 * @param mixed $value
 	 *
 	 * @return bool
