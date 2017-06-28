@@ -32,17 +32,6 @@ class Collection extends \ArrayObject
 	}
 
 	/**
-	 * @param $value
-	 */
-	public function append($value)
-	{
-		if (!$this->validateType($value))
-			throw new \InvalidArgumentException('Given value does not match expected value type for this collection.');
-
-		parent::append($value);
-	}
-
-	/**
 	 * @param mixed $value
 	 *
 	 * @return bool
