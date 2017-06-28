@@ -29,7 +29,7 @@ class CollectionTest extends TestCase
 		self::assertEquals(1, $collection->count());
 		self::assertCount(1, $collection->values());
 		self::assertEquals($string, $collection[0]);
-		self::assertEquals($string, $collection->getOffset(0));
+		self::assertEquals($string, $collection->offsetGet(0));
 	}
 
 	public function testAppendWithKey()
@@ -44,7 +44,7 @@ class CollectionTest extends TestCase
 		self::assertEquals(1, $collection->count());
 		self::assertCount(1, $collection->values());
 		self::assertEquals($string, $collection[$key]);
-		self::assertEquals($string, $collection->getOffset($key));
+		self::assertEquals($string, $collection->offsetGet($key));
 		self::assertTrue($collection->offsetExists($key));
 		self::assertSame([$key], $collection->keys());
 	}
