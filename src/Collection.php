@@ -51,21 +51,6 @@ class Collection extends \ArrayObject
 	}
 
 	/**
-	 * @param \Closure $condition
-	 *
-	 * @return Collection
-	 */
-	public function without(\Closure $condition): Collection
-	{
-		$collection = new self($this->validator);
-		foreach ((array) $this as $offset => $value)
-			if (!$condition($value))
-				$collection->offsetSet($offset, $value);
-
-		return $collection;
-	}
-
-	/**
 	 * @param mixed $value
 	 *
 	 * @return bool

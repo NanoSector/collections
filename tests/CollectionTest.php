@@ -94,18 +94,4 @@ class CollectionTest extends TestCase
 		self::assertEquals(['Test', 'ing', 'something'], $filteredCollection->values());
 		self::assertEquals(3, $filteredCollection->count());
 	}
-
-	public function testWithout()
-	{
-		$initialValues = ['Test', 'ing', 'something', 'else'];
-		$collection = new Collection($this->getStringValidatorClosure(), $initialValues);
-
-		$filteredCollection = $collection->without(function (string $value)
-		{
-			return $value != 'else';
-		});
-
-		self::assertEquals(['else'], $filteredCollection->values());
-		self::assertEquals(1, $filteredCollection->count());
-	}
 }
