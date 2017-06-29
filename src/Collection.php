@@ -43,7 +43,7 @@ class Collection extends \ArrayObject
 	public function filter(\Closure $condition): Collection
 	{
 		$collection = new self($this->validator);
-		foreach ($this->values() as $offset => $value)
+		foreach ((array) $this as $offset => $value)
 			if ($condition($value))
 				$collection->offsetSet($offset, $value);
 
@@ -58,7 +58,7 @@ class Collection extends \ArrayObject
 	public function without(\Closure $condition): Collection
 	{
 		$collection = new self($this->validator);
-		foreach ($this->values() as $offset => $value)
+		foreach ((array) $this as $offset => $value)
 			if (!$condition($value))
 				$collection->offsetSet($offset, $value);
 
