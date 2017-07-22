@@ -67,6 +67,21 @@ class CollectionTest extends TestCase
 		self::assertFalse($collection->contains($string));
 	}
 
+	public function testExchangeArray()
+	{
+		$array1 = ['Test', 'ing'];
+		$array2 = ['foo', 'bar'];
+		$array3 = ['foo', 10];
+
+		$collection = new Collection($this->getStringValidatorClosure(), $array1);
+		$collection->exchangeArray($array2);
+
+		self::assertEquals($array2, $collection->getArrayCopy());
+
+		self::expectException(\InvalidArgumentException::class);
+		$collection->exchangeArray($array3);
+	}
+
 	public function testInvalidType()
 	{
 		$collection = new Collection($this->getStringValidatorClosure());
@@ -79,6 +94,14 @@ class CollectionTest extends TestCase
 
 		$this->expectException(InvalidArgumentException::class);
 		$collection->offsetSet('test', 10);
+	}
+
+	public function testValidateArray()
+	{
+		$collection = new Collection($this->getStringValidatorClosure());
+
+		self::assertTrue($collection->validateArray(['foo', 'bar']));
+		self::assertFalse($collection->validateArray(['foo', 10]));
 	}
 
 	public function testFilter()
