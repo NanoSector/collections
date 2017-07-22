@@ -1,6 +1,7 @@
 # Collections
-[![Build Status](https://scrutinizer-ci.com/g/Yoshi2889/collections/badges/build.png?b=3.0)](https://scrutinizer-ci.com/g/Yoshi2889/collections/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Yoshi2889/collections/badges/quality-score.png?b=3.0)](https://scrutinizer-ci.com/g/Yoshi2889/collections/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/Yoshi2889/collections/badges/build.png)](https://scrutinizer-ci.com/g/Yoshi2889/collections/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Yoshi2889/collections/badges/quality-score.png)](https://scrutinizer-ci.com/g/Yoshi2889/collections/?branch=master)
+[![Scrutinizer Code Coverage](https://scrutinizer-ci.com/g/Yoshi2889/collections/badges/coverage.png)](https://scrutinizer-ci.com/g/Yoshi2889/collections/code-structure/master/code-coverage)
 [![Latest Stable Version](https://poser.pugx.org/yoshi2889/collections/v/stable)](https://packagist.org/packages/yoshi2889/collections)
 [![Latest Unstable Version](https://poser.pugx.org/yoshi2889/collections/v/unstable)](https://packagist.org/packages/yoshi2889/collections)
 [![Total Downloads](https://poser.pugx.org/yoshi2889/collections/downloads)](https://packagist.org/packages/yoshi2889/collections)
