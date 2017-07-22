@@ -113,6 +113,9 @@ class Collection extends \ArrayObject
 	 */
 	public function exchangeArray($input)
 	{
+		if (!$this->validateArray($input))
+			throw new \InvalidArgumentException('One or more given values in array do not match expected value type for this collection.');
+
 		parent::exchangeArray($input);
 		$this->emit('changed');
 	}
@@ -125,6 +128,20 @@ class Collection extends \ArrayObject
 	public function validateType($value): bool
 	{
 		return ($this->validator)($value);
+	}
+
+	/**
+	 * @param array $array
+	 *
+	 * @return bool
+	 */
+	public function validateArray(array $array): bool
+	{
+		foreach ($array as $value)
+			if (!$this->validateType($value))
+				return false;
+
+		return true;
 	}
 
 	/**
