@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.1.0",
-        "evenement/evenement": "^2.0"
+        "evenement/evenement": "^3.0 || ^2.0"
     },
     "suggest": {
         "yoshi2889/validation-closures": "Closures to use for validating data."
