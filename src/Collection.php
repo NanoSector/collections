@@ -8,147 +8,159 @@
 
 namespace Yoshi2889\Collections;
 
+use ArrayObject;
+use Closure;
 use Evenement\EventEmitterTrait;
+use InvalidArgumentException;
 
-class Collection extends \ArrayObject
+class Collection extends ArrayObject
 {
-	use EventEmitterTrait;
+    use EventEmitterTrait;
 
-	/**
-	 * @var \Closure
-	 */
-	protected $validator = '';
+    /**
+     * @var Closure
+     */
+    protected $validator = '';
 
-	/**
-	 * Collection constructor.
-	 *
-	 * @param \Closure $valueValidator
-	 * @param array $initialValues
-	 *
-	 * @internal param string $expectedValueType
-	 */
-	public function __construct(\Closure $valueValidator, array $initialValues = [])
-	{
-		$this->validator = $valueValidator;
+    /**
+     * Collection constructor.
+     *
+     * @param Closure $valueValidator
+     * @param array $initialValues
+     *
+     * @internal param string $expectedValueType
+     */
+    public function __construct(Closure $valueValidator, array $initialValues = [])
+    {
+        parent::__construct();
+        $this->validator = $valueValidator;
 
-		foreach ($initialValues as $key => $initialValue)
-			$this->offsetSet($key, $initialValue);
-	}
+        foreach ($initialValues as $key => $initialValue) {
+            $this->offsetSet($key, $initialValue);
+        }
+    }
 
-	/**
-	 * @param \Closure $condition
-	 *
-	 * @return Collection
-	 */
-	public function filter(\Closure $condition): Collection
-	{
-		$collection = new self($this->validator);
-		foreach ((array) $this as $offset => $value)
-			if ($condition($value))
-				$collection->offsetSet($offset, $value);
+    /**
+     * @param Closure $condition
+     *
+     * @return Collection
+     */
+    public function filter(Closure $condition): Collection
+    {
+        $collection = new self($this->validator);
+        foreach ((array)$this as $offset => $value) {
+            if ($condition($value)) {
+                $collection->offsetSet($offset, $value);
+            }
+        }
 
-		return $collection;
-	}
+        return $collection;
+    }
 
-	/**
-	 * @param mixed $value
-	 *
-	 * @return bool
-	 */
-	public function contains($value): bool
-	{
-		return in_array($value, (array) $this);
-	}
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public function contains($value): bool
+    {
+        return in_array($value, (array)$this, true);
+    }
 
-	/**
-	 * @param $value
-	 *
-	 * @return false|int|string|mixed
-	 */
-	public function getOffset($value)
-	{
-		return array_search($value, (array) $this);
-	}
+    /**
+     * @param $value
+     *
+     * @return false|int|string|mixed
+     */
+    public function getOffset($value)
+    {
+        return array_search($value, (array)$this, true);
+    }
 
-	/**
-	 * @return array
-	 */
-	public function keys(): array
-	{
-		return array_keys((array) $this);
-	}
+    /**
+     * @return array
+     */
+    public function keys(): array
+    {
+        return array_keys((array)$this);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function offsetSet($offset, $value)
-	{
-		if (!$this->validateType($value))
-			throw new \InvalidArgumentException('Given value does not match expected value type for this collection.');
+    /**
+     * @inheritdoc
+     */
+    public function offsetSet($offset, $value): void
+    {
+        if (!$this->validateType($value)) {
+            throw new InvalidArgumentException('Given value does not match expected value type for this collection.');
+        }
 
-		parent::offsetSet($offset, $value);
-		$this->emit('changed');
-	}
+        parent::offsetSet($offset, $value);
+        $this->emit('changed');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function offsetUnset($index)
-	{
-		parent::offsetUnset($index);
-		$this->emit('changed');
-	}
+    /**
+     * @inheritdoc
+     */
+    public function offsetUnset($index): void
+    {
+        parent::offsetUnset($index);
+        $this->emit('changed');
+    }
 
-	/**
-	 * @param mixed $value
-	 */
-	public function removeAll($value)
-	{
-		while ($this->contains($value))
-			$this->offsetUnset($this->getOffset($value));
-	}
+    /**
+     * @param mixed $value
+     */
+    public function removeAll($value): void
+    {
+        while ($this->contains($value)) {
+            $this->offsetUnset($this->getOffset($value));
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function exchangeArray($input)
-	{
-		if (!$this->validateArray($input))
-			throw new \InvalidArgumentException('One or more given values in array do not match expected value type for this collection.');
+    /**
+     * @inheritdoc
+     */
+    public function exchangeArray($input)
+    {
+        if (!$this->validateArray($input)) {
+            throw new InvalidArgumentException('One or more given values in array do not match expected value type for this collection.');
+        }
 
-		parent::exchangeArray($input);
-		$this->emit('changed');
-	}
+        parent::exchangeArray($input);
+        $this->emit('changed');
+    }
 
-	/**
-	 * @param $value
-	 *
-	 * @return bool
-	 */
-	public function validateType($value): bool
-	{
-		return ($this->validator)($value);
-	}
+    /**
+     * @param $value
+     *
+     * @return bool
+     */
+    public function validateType($value): bool
+    {
+        return ($this->validator)($value);
+    }
 
-	/**
-	 * @param array $array
-	 *
-	 * @return bool
-	 */
-	public function validateArray(array $array): bool
-	{
-		foreach ($array as $value)
-			if (!$this->validateType($value))
-				return false;
+    /**
+     * @param array $array
+     *
+     * @return bool
+     */
+    public function validateArray(array $array): bool
+    {
+        foreach ($array as $value) {
+            if (!$this->validateType($value)) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function values(): array
-	{
-		return array_values((array) $this);
-	}
+    /**
+     * @return array
+     */
+    public function values(): array
+    {
+        return array_values((array)$this);
+    }
 }
