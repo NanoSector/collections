@@ -36,8 +36,8 @@ jobs:
             -   name: Run PHP Code Sniffer
                 run: composer run phpcs
 
-            -   name: Run PHPStan
-                run: composer run phpstan
-
             -   name: Run PHP Mess Detector
                 run: composer run phpmd-github
+
+            -   name: Run PHPStan
+                run: composer run phpstan
