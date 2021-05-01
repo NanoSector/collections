@@ -1,0 +1,46 @@
+name: Code analysis
+
+on:
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    tests:
+        name: PHPUnit tests
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: shivammathur/setup-php@2.10.0
+                with:
+                    php-version: '7.2'
+
+            -   uses: actions/checkout@v2
+
+            -   name: Install Dependencies
+                run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --dev
+
+            -   name: Run PHPUnit
+                run: composer run phpunit
+    static-analysis:
+        name: Static analysis
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: shivammathur/setup-php@2.10.0
+                with:
+                    php-version: '7.2'
+                    tools: composer, cs2pr
+
+            -   uses: actions/checkout@v2
+
+            -   name: Install Dependencies
+                run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --dev
+
+            -   name: Run PHP Code Sniffer
+                run: composer run phpcs-github | cs2pr
+
+            -   name: Run PHP Mess Detector
+                run: composer run phpmd-github
+                if: ${{ always() }}
+
+            -   name: Run PHPStan
+                run: composer run phpstan
+                if: ${{ always() }}
