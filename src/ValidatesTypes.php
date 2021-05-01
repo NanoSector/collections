@@ -16,7 +16,7 @@ trait ValidatesTypes
     /**
      * The validator closure which determines if the value is valid.
      *
-     * @var Closure(mixed): bool
+     * @var callable(mixed): bool
      */
     protected $validator;
 

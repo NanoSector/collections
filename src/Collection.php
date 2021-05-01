@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Yoshi2889\Collections;
 
 use ArrayObject;
-use Closure;
 use InvalidArgumentException;
 
 /**
@@ -29,13 +28,13 @@ class Collection extends ArrayObject
     /**
      * Collection constructor.
      *
-     * @param Closure(mixed): bool $valueValidator
+     * @param callable(mixed): bool $valueValidator
      * @param array<T> $initialValues
      *
      * @internal param string $expectedValueType
      */
     public function __construct(
-        Closure $valueValidator,
+        callable $valueValidator,
         array $initialValues = []
     ) {
         parent::__construct();
@@ -49,11 +48,11 @@ class Collection extends ArrayObject
     /**
      * Filter the collection by the given closure.
      *
-     * @param Closure(T): bool $condition
+     * @param callable(T): bool $condition
      *
      * @return Collection<T>
      */
-    public function filter(Closure $condition): Collection
+    public function filter(callable $condition): Collection
     {
         $collection = new self($this->validator);
         foreach ($this->toArray() as $offset => $value) {
