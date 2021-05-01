@@ -43,6 +43,9 @@
     "phpcs": [
       "@php vendor/bin/phpcs --standard=PSR12 src/ tests/"
     ],
+    "phpcs-github": [
+      "@php vendor/bin/phpcs --standard=PSR12 --report=checkstyle src/ tests/"
+    ],
     "phpcbf": [
       "@php vendor/bin/phpcbf --standard=PSR12 src/ tests/"
     ],
