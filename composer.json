@@ -49,6 +49,9 @@
     "phpmd": [
       "@php vendor/bin/phpmd src/ text phpmd_ruleset.xml --suffixes php"
     ],
+    "phpmd-github": [
+      "@php vendor/bin/phpmd src/ github phpmd_ruleset.xml --suffixes php"
+    ],
     "phpstan": [
       "@php vendor/bin/phpstan analyse -c phpstan.neon -n src/"
     ]
