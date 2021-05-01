@@ -1,37 +1,43 @@
 <?php
-/**
- * Copyright 2017 NanoSector
+
+/*
+ * Copyright 2021 NanoSector
  *
  * You should have received a copy of the MIT license with the project.
  * See the LICENSE file for more information.
  */
 
+declare(strict_types=1);
+
 namespace Yoshi2889\Collections;
 
 use ArrayObject;
 use Closure;
-use Evenement\EventEmitterTrait;
 use InvalidArgumentException;
 
+/**
+ * Class Collection
+ *
+ * @package  Yoshi2889\Collections
+ * @extends  ArrayObject<int|string, T>
+ * @template T
+ */
 class Collection extends ArrayObject
 {
-    use EventEmitterTrait;
-
-    /**
-     * @var Closure
-     */
-    protected $validator = '';
+    use ValidatesTypes;
 
     /**
      * Collection constructor.
      *
-     * @param Closure $valueValidator
-     * @param array $initialValues
+     * @param Closure(mixed): bool $valueValidator
+     * @param array<T> $initialValues
      *
      * @internal param string $expectedValueType
      */
-    public function __construct(Closure $valueValidator, array $initialValues = [])
-    {
+    public function __construct(
+        Closure $valueValidator,
+        array $initialValues = []
+    ) {
         parent::__construct();
         $this->validator = $valueValidator;
 
@@ -41,14 +47,16 @@ class Collection extends ArrayObject
     }
 
     /**
-     * @param Closure $condition
+     * Filter the collection by the given closure.
      *
-     * @return Collection
+     * @param Closure(T): bool $condition
+     *
+     * @return Collection<T>
      */
     public function filter(Closure $condition): Collection
     {
         $collection = new self($this->validator);
-        foreach ((array)$this as $offset => $value) {
+        foreach ($this->toArray() as $offset => $value) {
             if ($condition($value)) {
                 $collection->offsetSet($offset, $value);
             }
@@ -58,19 +66,23 @@ class Collection extends ArrayObject
     }
 
     /**
+     * Determine whether this collection contains the given value.
+     *
      * @param mixed $value
      *
-     * @return bool
+     * @return boolean
      */
     public function contains($value): bool
     {
-        return in_array($value, (array)$this, true);
+        return in_array($value, $this->toArray(), true);
     }
 
     /**
-     * @param $value
+     * Returns the offset of the given value, or false if it does not exist.
      *
-     * @return false|int|string|mixed
+     * @param T $value
+     *
+     * @return int|string|false
      */
     public function getOffset($value)
     {
@@ -78,89 +90,82 @@ class Collection extends ArrayObject
     }
 
     /**
-     * @return array
+     * Sets a value at the given offset.
+     *
+     * @param int|string $key
+     * @param T $value
      */
-    public function keys(): array
-    {
-        return array_keys((array)$this);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($key, $value): void
     {
         if (!$this->validateType($value)) {
-            throw new InvalidArgumentException('Given value does not match expected value type for this collection.');
+            throw new InvalidArgumentException(
+                'Given value does not match expected value type for this collection.'
+            );
         }
 
-        parent::offsetSet($offset, $value);
-        $this->emit('changed');
+        parent::offsetSet($key, $value);
     }
 
     /**
-     * @inheritdoc
-     */
-    public function offsetUnset($index): void
-    {
-        parent::offsetUnset($index);
-        $this->emit('changed');
-    }
-
-    /**
-     * @param mixed $value
+     * Removes all occurrences of the given value.
+     *
+     * @param T $value
      */
     public function removeAll($value): void
     {
         while ($this->contains($value)) {
-            $this->offsetUnset($this->getOffset($value));
-        }
-    }
+            $offset = $this->getOffset($value);
 
-    /**
-     * @inheritdoc
-     */
-    public function exchangeArray($input)
-    {
-        if (!$this->validateArray($input)) {
-            throw new InvalidArgumentException('One or more given values in array do not match expected value type for this collection.');
-        }
-
-        parent::exchangeArray($input);
-        $this->emit('changed');
-    }
-
-    /**
-     * @param $value
-     *
-     * @return bool
-     */
-    public function validateType($value): bool
-    {
-        return ($this->validator)($value);
-    }
-
-    /**
-     * @param array $array
-     *
-     * @return bool
-     */
-    public function validateArray(array $array): bool
-    {
-        foreach ($array as $value) {
-            if (!$this->validateType($value)) {
-                return false;
+            if ($offset === false) {
+                continue;
             }
-        }
 
-        return true;
+            $this->offsetUnset($offset);
+        }
     }
 
     /**
-     * @return array
+     * Exchanges the current collection with the given array.
+     *
+     * @param array<T> $array
+     * @return array<T>
+     */
+    public function exchangeArray($array): array
+    {
+        if (!$this->validateArray($array)) {
+            throw new InvalidArgumentException(
+                'The given array does not match expected type for this collection.'
+            );
+        }
+
+        return parent::exchangeArray($array);
+    }
+
+    /**
+     * Returns all keys in this collection.
+     *
+     * @return array<int|string>
+     */
+    public function keys(): array
+    {
+        return array_keys($this->toArray());
+    }
+
+    /**
+     * Returns all values in this collection.
+     *
+     * @return array<int, T>
      */
     public function values(): array
     {
-        return array_values((array)$this);
+        return array_values($this->toArray());
+    }
+
+    /**
+     * @return array<int|string, T>
+     */
+    public function toArray(): array
+    {
+        return $this->getArrayCopy();
     }
 }
